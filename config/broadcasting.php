@@ -36,12 +36,12 @@ return [
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
-                'cluster' => 'mt1',
-                'useTLS' => false,
-                'host' => env('PUSHER_HOST'),
-                'port' => env('PUSHER_PORT'),
-                'scheme' => env('PUSHER_SCHEME'),
-                'encrypted' => false,
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'host' => env('PUSHER_HOST', '127.0.0.1'), // Pastikan ini ada
+                'port' => env('PUSHER_PORT', 6001),       // Pastikan ini ada
+                'scheme' => env('PUSHER_SCHEME', 'http'), // Pastikan ini ada
+                'encrypted' => false, // Set ke false untuk pengembangan lokal
+                'useTLS' => env('PUSHER_SCHEME') === 'https',
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html

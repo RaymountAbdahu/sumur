@@ -1,560 +1,405 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}">
     <title>
-        SUMUR AJAIB
+        Dashboard Sumur Ajaib
     </title>
-    <!--     Fonts and icons     -->
+    <!-- Fonts and icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <!-- CSS Files -->
-    <link id="pagestyle" href="{{ asset('temp/file/assets/css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+    <link id="pagestyle" href="{{ asset('temp/file/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
 
+    <!-- Load Vite assets -->
+    @vite('resources/js/app.js')
+
+    <!-- Custom Styles for UI/UX Revamp -->
+    <style>
+        :root {
+            --bg-color: #2c3e50;
+            --main-card-bg: rgba(23, 32, 42, 0.7);
+            --card-bg: rgba(44, 62, 80, 0.6);
+            --border-color: rgba(0, 255, 255, 0.2);
+            --text-color: #ecf0f1;
+            --text-muted-color: #bdc3c7;
+            --glow-color: #00cyan;
+            --water-color-top: #00f2fe;
+            --water-color-bottom: #4facfe;
+            --status-aman: #00f2fe;
+            --status-waspada: #f1c40f;
+            --status-siaga: #e67e22;
+            --status-bahaya: #e74c3c;
+        }
+
+        body.g-sidenav-show {
+            background-color: var(--bg-color);
+        }
+
+        /* Override the default dark background to show the image */
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('{{ asset('temp/file/assets/img/uksum.jpg') }}') no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.6);
+            z-index: -1;
+        }
+
+        .main-content {
+            position: relative;
+        }
+        
+        .min-height-300 {
+            background: none !important;
+        }
+
+        /* Frosted Glass Card Effect */
+        .card-glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .card-glass:hover {
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: translateY(-5px);
+        }
+
+        .card-glass .card-header, .card-glass .card-body, .card-glass .card-footer {
+            background-color: transparent;
+        }
+
+        .card-glass h1, .card-glass h2, .card-glass h3, .card-glass h4, .card-glass h5, .card-glass h6 {
+            color: var(--text-color);
+        }
+
+        .card-glass p, .card-glass .text-sm, .card-glass .text-xs {
+            color: var(--text-muted-color);
+        }
+
+        /* Main Status Card Styling */
+        #main-status-card {
+            background: var(--main-card-bg);
+            text-align: center;
+            padding: 2rem 1rem;
+            border-width: 2px;
+        }
+
+        #status-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        /* Magic Well Visualization */
+        .magic-well-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            height: 100%;
+        }
+
+        .magic-well {
+            width: 180px;
+            height: 420px;
+            border: 4px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(to bottom, var(--status-aman), #9b59b6);
+            border-radius: 20px 20px 100px 100px;
+            position: relative;
+            background: rgba(10, 10, 20, 0.5);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        #water-level {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, var(--water-color-bottom), var(--water-color-top));
+            transition: height 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        /* Wave Animation */
+        .wave {
+            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x;
+            position: absolute;
+            top: -198px;
+            width: 6400px;
+            height: 198px;
+            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+            transform: translate3d(0, 0, 0);
+        }
+        .wave:nth-of-type(2) {
+            top: -175px;
+            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite, swell 7s ease -1.25s infinite;
+            opacity: 1;
+        }
+        @keyframes wave {
+            0% { margin-left: 0; }
+            100% { margin-left: -1600px; }
+        }
+        @keyframes swell {
+            0%, 100% { transform: translate3d(0, -25px, 0); }
+            50% { transform: translate3d(0, 5px, 0); }
+        }
+
+        /* Bubbles Animation */
+        .bubble {
+            position: absolute;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: bubble-rise 10s infinite ease-in;
+        }
+        @keyframes bubble-rise {
+            0% { bottom: -10px; transform: translateX(0); }
+            100% { bottom: 105%; transform: translateX(15px); }
+        }
+
+        /* Sensor Detail Item */
+        .sensor-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.75rem;
+            background: rgba(0,0,0,0.2);
+            transition: background 0.3s ease;
+        }
+        .sensor-item:hover {
+            background: rgba(0,0,0,0.4);
+        }
+        .sensor-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--text-muted-color);
+            transition: all 0.3s ease;
+        }
+        .sensor-icon.active {
+            color: var(--status-aman);
+            text-shadow: 0 0 10px var(--status-aman);
+        }
+
+        /* Dynamic Status Colors */
+        .status-aman { border-color: var(--status-aman); color: var(--status-aman); }
+        .status-waspada { border-color: var(--status-waspada); color: var(--status-waspada); }
+        .status-siaga { border-color: var(--status-siaga); color: var(--status-siaga); }
+        .status-bahaya { border-color: var(--status-bahaya); color: var(--status-bahaya); }
+        .status-unknown { border-color: var(--text-muted-color); color: var(--text-muted-color); }
+
+    </style>
 </head>
 
-<body class="g-sidenav-show   bg-gray-100">
-    <div class="min-height-300 bg-dark position-absolute w-100"></div>
-    <aside
-        class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
-        id="sidenav-main">
-        <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html "
-                target="_blank">
-                <img src="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}" width="26px" height="26px"
-                    class="navbar-brand-img h-100" alt="main_logo">
-                <span class="ms-1 font-weight-bold">SUMUR AJAIB</span>
-            </a>
-        </div>
-        <hr class="horizontal dark mt-0">
-        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ 'dashboard' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="{{ 'data' }}">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Tables</span>
-                    </a>
-                </li>
-
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="../pages/profile.html">
-                        <div
-                            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
-                        </div>
-                        <span class="nav-link-text ms-1">Profile</span>
-                    </a>
-                </li>
-
-            </ul>
-        </div>
-
-    </aside>
-    <main class="main-content position-relative border-radius-lg ">
-        <!-- Navbar -->
-        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur"
-            data-scroll="false">
-            <div class="container-fluid py-1 px-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white"
-                                href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Dashboard</li>
-                    </ol>
-                    <h6 class="font-weight-bolder text-white mb-0">Dashboard</h6>
-                </nav>
-
-            </div>
-        </nav>
-        <!-- End Navbar -->
-        <div class="container-fluid py-4">
-            <div class="row">
-
-                <!-- Card 1: System Status -->
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                    <div class="card">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">System Status</p>
-                                        <h5
-                                            class="font-weight-bolder
-                                {{ $latestData && $latestData->status === 'Bahaya'
-                                    ? 'text-danger'
-                                    : ($latestData && $latestData->status === 'Waspada'
-                                        ? 'text-warning'
-                                        : 'text-success') }}">
-                                            {{ $latestData->status ?? 'Tidak Ada Data' }}
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div
-                                        class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                        <i class="ni ni-check-bold text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Today's Water Level -->
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                    <div class="card">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Water Level</p>
-                                        <h5 class="font-weight-bolder" id="today-level">
-                                            {{ number_format($waterLevelPercent ?? 0, 0) }}%
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div
-                                        class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                        <i class="ni ni-drop-fill text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3: Weekly Average -->
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                    <div class="card">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">Weekly Average</p>
-                                        <h5 class="font-weight-bolder">
-                                            {{ number_format($weeklyAverage ?? 0, 0) }}%
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div
-                                        class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                                        <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4: Max Water Level -->
-                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                    <div class="card">
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">Max Water Level</p>
-                                        <h5 class="font-weight-bolder">
-                                            {{ number_format($weeklyMax ?? 0, 0) }}%
-                                        </h5>
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div
-                                        class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                                        <i class="ni ni-sound-wave text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-4 " style="height: 500px">
-                <!-- Kolom Kiri: Card dengan background sumur -->
-                <div class="col-lg-7 mb-lg-0 mb-4">
-                    <div class="card z-index-2 h-100 pb-3 pt-5 ps-3"
-                        style="background-image: url('{{ asset('temp/file/assets/img/uksum.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-                        <div class="row align-items-center justify-content-center">
-                            <!-- Kolom Gambar hanya jika ingin tetap ada gambar terpisah, bisa dihapus -->
-                            <!-- <div class="col d-flex justify-content-start">
-                    <img src="{{ asset('temp/file/assets/img/uksum.jpg') }}" alt="" style="max-height: 400px;">
-                </div> -->
-
-                            <!-- Kolom Indikator Air -->
-                            <div class="col d-flex justify-content-center align-items-end">
-                                <!-- align-items-end = bar tetap di bawah -->
-                                <div class="position-relative border border-dark rounded bg-transparent bg-opacity-75 me-4"
-                                    style="width: 10px; height: 380px;"> <!-- GANTI HEIGHT DI SINI SAJA -->
-
-                                    <!-- Tinggi Air -->
-                                    <div id="water-level" class="bg-primary position-absolute bottom-0 w-100 "
-                                        style="height: {{ $waterLevelPercent }}%; border-radius: 0 0 5px 5px;"></div>
-
-
-                                    <!-- Label Persentase -->
-                                    <!-- Label Persentase -->
-                                    <div class="position-absolute"
-                                        style="left: 100%; top: 0%; margin-left: 10px; font-size: 14px; color: white; font-weight: bold;">
-                                        100%</div>
-                                    <div class="position-absolute"
-                                        style="left: 100%; top: 20%; margin-left: 10px; font-size: 14px; color: white; font-weight: bold;">
-                                        80%</div>
-                                    <div class="position-absolute"
-                                        style="left: 100%; top: 40%; margin-left: 10px; font-size: 14px; color: white; font-weight: bold;">
-                                        60%</div>
-                                    <div class="position-absolute"
-                                        style="left: 100%; top: 60%; margin-left: 10px; font-size: 14px; color: white; font-weight: bold;">
-                                        40%</div>
-                                    <div class="position-absolute"
-                                        style="left: 100%; top: 80%; margin-left: 10px; font-size: 14px; color: white; font-weight: bold;">
-                                        20%</div>
-                                    <div class="position-absolute"
-                                        style="left: 100%; top: 100%; transform: translateY(-100%); margin-left: 10px; font-size: 14px; color: white; font-weight: bold;">
-                                        0%</div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kolom Kanan: Carousel seperti sebelumnya -->
-                <div class="col-lg-5">
-                    <div class="card card-carousel overflow-hidden h-100 p-0">
-                        <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-                            <div class="carousel-inner border-radius-lg h-100">
-                                <div class="carousel-item h-100 active"
-                                    style="background-image: url('{{ asset('temp/file/assets/img/anm sumur.jpg') }}'); background-size: cover;">
-                                    <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                                        <div
-                                            class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                                            <i class="ni ni-camera-compact text-dark opacity-10"></i>
-                                        </div>
-                                        <h5 class="text-white mb-1">Get started with Argon</h5>
-                                        <p>There’s nothing I really wanted to do in life that I wasn’t able to get good
-                                            at.</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item h-100"
-                                    style="background-image: url('{{ asset('temp/file/assets/img/ukur sumur.jpg') }}'); background-size: cover;">
-                                    <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                                        <div
-                                            class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                                            <i class="ni ni-bulb-61 text-dark opacity-10"></i>
-                                        </div>
-                                        <h5 class="text-white mb-1">Faster way to create web pages</h5>
-                                        <p>That’s my skill. I’m not really specifically talented at anything except for
-                                            the ability to learn.</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item h-100"
-                                    style="background-image: url('{{ asset('temp/file/assets/img/sumur img.jpg') }}'); background-size: cover;">
-                                    <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                                        <div
-                                            class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                                            <i class="ni ni-trophy text-dark opacity-10"></i>
-                                        </div>
-                                        <h5 class="text-white mb-1">Share with us your design tips!</h5>
-                                        <p>Don’t be afraid to be wrong because you can’t learn anything from a
-                                            compliment.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev w-5 me-3" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next w-5 me-3" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            {{-- end indikator --}}
-
-            <footer class="footer pt-3  ">
-                <div class="container-fluid">
-                    <div class="row align-items-center justify-content-lg-between">
-                        <div class="col-lg-6 mb-lg-0 mb-4">
-                            <div class="copyright text-center text-sm text-muted text-lg-start">
-                                ©
-                                <script>
-                                    document.write(new Date().getFullYear())
-                                </script>,
-                                made with <i class="fa fa-heart"></i> by
-                                <a href="https://www.creative-tim.com" class="font-weight-bold"
-                                    target="_blank">Creative Tim</a>
-                                for a better web.
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com" class="nav-link text-muted"
-                                        target="_blank">Creative Tim</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted"
-                                        target="_blank">About Us</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com/blog" class="nav-link text-muted"
-                                        target="_blank">Blog</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted"
-                                        target="_blank">License</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    </main>
-    <div class="fixed-plugin">
-        <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-            <i class="fa fa-cog py-2"> </i>
-        </a>
-        <div class="card shadow-lg">
-            <div class="card-header pb-0 pt-3 ">
-                <div class="float-start">
-                    <h5 class="mt-3 mb-0">Argon Configurator</h5>
-                    <p>See our dashboard options.</p>
-                </div>
-                <div class="float-end mt-4">
-                    <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-                        <i class="fa fa-close"></i>
-                    </button>
-                </div>
-                <!-- End Toggle Button -->
-            </div>
-            <hr class="horizontal dark my-1">
-            <div class="card-body pt-sm-3 pt-0 overflow-auto">
-                <!-- Sidebar Backgrounds -->
-                <div>
-                    <h6 class="mb-0">Sidebar Colors</h6>
-                </div>
-                <a href="javascript:void(0)" class="switch-trigger background-color">
-                    <div class="badge-colors my-2 text-start">
-                        <span class="badge filter bg-gradient-primary active" data-color="primary"
-                            onclick="sidebarColor(this)"></span>
-                        <span class="badge filter bg-gradient-dark" data-color="dark"
-                            onclick="sidebarColor(this)"></span>
-                        <span class="badge filter bg-gradient-info" data-color="info"
-                            onclick="sidebarColor(this)"></span>
-                        <span class="badge filter bg-gradient-success" data-color="success"
-                            onclick="sidebarColor(this)"></span>
-                        <span class="badge filter bg-gradient-warning" data-color="warning"
-                            onclick="sidebarColor(this)"></span>
-                        <span class="badge filter bg-gradient-danger" data-color="danger"
-                            onclick="sidebarColor(this)"></span>
-                    </div>
+<body class="g-sidenav-show">
+    <div class="main-content position-relative max-height-vh-100 h-100">
+        <!-- Sidenav -->
+        <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 card-glass" id="sidenav-main">
+            <div class="sidenav-header">
+                <a class="navbar-brand m-0" href="{{ route('dashboard') }}">
+                    <img src="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}" class="navbar-brand-img h-100" alt="main_logo">
+                    <span class="ms-1 font-weight-bold text-white">SUMUR AJAIB</span>
                 </a>
-                <!-- Sidenav Type -->
-                <div class="mt-3">
-                    <h6 class="mb-0">Sidenav Type</h6>
-                    <p class="text-sm">Choose between 2 different sidenav types.</p>
-                </div>
-                <div class="d-flex">
-                    <button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white"
-                        onclick="sidebarType(this)">White</button>
-                    <button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default"
-                        onclick="sidebarType(this)">Dark</button>
-                </div>
-                <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-                <!-- Navbar Fixed -->
-                <div class="d-flex my-3">
-                    <h6 class="mb-0">Navbar Fixed</h6>
-                    <div class="form-check form-switch ps-0 ms-auto my-auto">
-                        <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed"
-                            onclick="navbarFixed(this)">
+            </div>
+            <hr class="horizontal light mt-0 mb-2">
+            <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('dashboard') }}" style="background: rgba(0, 255, 255, 0.1); border-radius: 0.5rem;">
+                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-tv-2 text-white text-sm"></i>
+                            </div>
+                            <span class="nav-link-text ms-1 text-white">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('table') }}">
+                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="ni ni-calendar-grid-58 text-white text-sm"></i>
+                            </div>
+                            <span class="nav-link-text ms-1 text-white">Tabel Data</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content position-relative border-radius-lg">
+             <div class="container-fluid py-4">
+                <div class="row">
+                    <!-- Left Column: Visualization -->
+                    <div class="col-lg-7 mb-lg-0 mb-4">
+                        <div class="card card-glass magic-well-container">
+                            <div class="magic-well">
+                                <div id="water-level">
+                                    <div class="wave"></div>
+                                    <div class="wave"></div>
+                                    <!-- Bubbles will be added by JS -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <hr class="horizontal dark my-sm-4">
-                <div class="mt-2 mb-5 d-flex">
-                    <h6 class="mb-0">Light / Dark</h6>
-                    <div class="form-check form-switch ps-0 ms-auto my-auto">
-                        <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version"
-                            onclick="darkMode(this)">
+
+                    <!-- Right Column: Information -->
+                    <div class="col-lg-5">
+                        <!-- Main Status -->
+                        <div id="main-status-card" class="card card-glass status-unknown mb-4">
+                            <p class="text-uppercase font-weight-bold text-sm opacity-7 mb-0">Status Sistem</p>
+                            <h2 id="status-text" class="font-weight-bolder mb-0">Menunggu Data...</h2>
+                        </div>
+
+                        <!-- Info Cards -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                 <div class="card card-glass mb-4">
+                                     <div class="card-body p-3">
+                                         <p class="text-sm mb-0 text-uppercase font-weight-bold">Level Air</p>
+                                         <h5 id="water-level-percent-text" class="font-weight-bolder mb-0">0%</h5>
+                                     </div>
+                                 </div>
+                            </div>
+                             <div class="col-sm-6">
+                                 <div class="card card-glass mb-4">
+                                     <div class="card-body p-3">
+                                         <p class="text-sm mb-0 text-uppercase font-weight-bold">Update</p>
+                                         <h5 id="waktu-text" class="font-weight-bolder mb-0">--:--:--</h5>
+                                     </div>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Sensor Details -->
+                        <div class="card card-glass">
+                            <div class="card-header pb-0">
+                                <h6>Detail Sensor</h6>
+                            </div>
+                            <div class="card-body p-3">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <div class="sensor-item">
+                                        <i id="sensor-icon-{{$i}}" class="sensor-icon fas fa-tint-slash"></i>
+                                        <div class="d-flex flex-column">
+                                            <h6 class="mb-0 text-sm">Sensor {{ $i }} <span class="text-muted">({{ ($i-1) * 25 }} cm)</span></h6>
+                                            <span id="sensor-status-{{$i}}" class="text-xs">Tidak Aktif</span>
+                                        </div>
+                                    </div>
+                                @endfor
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <a class="btn bg-gradient-dark w-100" href="https://www.creative-tim.com/product/argon-dashboard">Free
-                    Download</a>
-                <a class="btn btn-outline-dark w-100"
-                    href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard">View
-                    documentation</a>
-                <div class="w-100 text-center">
-                    <a class="github-button" href="https://github.com/creativetimofficial/argon-dashboard"
-                        data-icon="octicon-star" data-size="large" data-show-count="true"
-                        aria-label="Star creativetimofficial/argon-dashboard on GitHub">Star</a>
-                    <h6 class="mt-3">Thank you for sharing!</h6>
-                    <a href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard"
-                        class="btn btn-dark mb-0 me-2" target="_blank">
-                        <i class="fab fa-twitter me-1" aria-hidden="true"></i> Tweet
-                    </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard"
-                        class="btn btn-dark mb-0 me-2" target="_blank">
-                        <i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
-                    </a>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script kontrol slider -->
-    <script>
-        const range = document.getElementById('water-range');
-        const valueText = document.getElementById('water-value');
-        const waterLevel = document.getElementById('water-level');
+    <!-- Core JS Files -->
+    <script src="{{ asset('temp/file/assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('temp/file/assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('temp/file/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('temp/file/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('temp/file/assets/js/argon-dashboard.min.js') }}"></script>
 
-        range.addEventListener('input', () => {
-            const val = range.value;
-            valueText.textContent = val;
-            waterLevel.style.height = val + '%';
-        });
-    </script>
-    <!--   Core JS Files   -->
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-    <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-    <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-    <script src="../assets/js/plugins/chartjs.min.js"></script>
-    <script>
-        var ctx1 = document.getElementById("chart-line").getContext("2d");
+    <!-- Real-time Script with Laravel Echo -->
+    <script type="module">
+        // --- Element Selectors ---
+        const mainStatusCard = document.getElementById('main-status-card');
+        const statusTextEl = document.getElementById('status-text');
+        const waktuTextEl = document.getElementById('waktu-text');
+        const waterLevelPercentTextEl = document.getElementById('water-level-percent-text');
+        const waterLevelEl = document.getElementById('water-level');
 
-        var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+        // --- Status Configuration ---
+        const statusConfig = {
+            'Bahaya': { className: 'status-bahaya' },
+            'Siaga': { className: 'status-siaga' },
+            'Waspada': { className: 'status-waspada' },
+            'Aman': { className: 'status-aman' },
+            'default': { className: 'status-unknown' }
+        };
 
-        gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
-        gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
-        gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
-        new Chart(ctx1, {
-            type: "line",
-            data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Mobile apps",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    pointRadius: 0,
-                    borderColor: "#5e72e4",
-                    backgroundColor: gradientStroke1,
-                    borderWidth: 3,
-                    fill: true,
-                    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                    maxBarThickness: 6
-
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                scales: {
-                    y: {
-                        grid: {
-                            drawBorder: false,
-                            display: true,
-                            drawOnChartArea: true,
-                            drawTicks: false,
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            display: true,
-                            padding: 10,
-                            color: '#fbfbfb',
-                            font: {
-                                size: 11,
-                                family: "Open Sans",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                    x: {
-                        grid: {
-                            drawBorder: false,
-                            display: false,
-                            drawOnChartArea: false,
-                            drawTicks: false,
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            display: true,
-                            color: '#ccc',
-                            padding: 20,
-                            font: {
-                                size: 11,
-                                family: "Open Sans",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                },
-            },
-        });
-    </script>
-    <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
+        // --- Bubble Generator ---
+        function createBubbles() {
+            const waterContainer = document.querySelector('.magic-well');
+            const bubbleCount = 20;
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 10 + 5 + 'px';
+                bubble.style.width = size;
+                bubble.style.height = size;
+                bubble.style.left = Math.random() * 90 + '%';
+                bubble.style.animationDuration = Math.random() * 5 + 5 + 's';
+                bubble.style.animationDelay = Math.random() * 5 + 's';
+                waterContainer.appendChild(bubble);
             }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
+        createBubbles();
+
+        // --- Main UI Update Function ---
+        function updateDashboard(data) {
+            console.log("Menerima data baru:", data);
+            
+            const status = data.status || 'default';
+            const percent = Math.round(data.waterLevelPercent || 0);
+            const statusClass = statusConfig[status]?.className || statusConfig.default.className;
+
+            // 1. Update Main Status Card
+            mainStatusCard.className = `card card-glass mb-4 ${statusClass}`;
+            statusTextEl.textContent = data.status || 'Tidak Diketahui';
+            statusTextEl.className = `font-weight-bolder mb-0 ${statusClass}`;
+
+            // 2. Update Last Update Time
+            waktuTextEl.textContent = new Date(data.waktu).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            // 3. Update Water Level Percentage Text
+            waterLevelPercentTextEl.textContent = `${percent}%`;
+
+            // 4. Update Water Well Visualization
+            waterLevelEl.style.height = `${percent}%`;
+            
+            // 5. Update Individual Sensor Status
+            for (let i = 1; i <= 5; i++) {
+                const icon = document.getElementById(`sensor-icon-${i}`);
+                const statusText = document.getElementById(`sensor-status-${i}`);
+                if (data[`sensor${i}`]) {
+                    icon.className = 'sensor-icon fas fa-tint active';
+                    statusText.textContent = 'Aktif';
+                } else {
+                    icon.className = 'sensor-icon fas fa-tint-slash';
+                    statusText.textContent = 'Tidak Aktif';
+                }
+            }
+        }
+
+        // --- Initial Data Load ---
+        const initialData = @json($latestData);
+        if (initialData) {
+            initialData.waterLevelPercent = @json($waterLevelPercent);
+            updateDashboard(initialData);
+        }
+
+        // --- WebSocket Listener ---
+        window.Echo.channel('water-level-channel')
+            .listen('.new-data', (event) => {
+                updateDashboard(event.data);
+            });
     </script>
-    <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="{{ asset('temp/file/assets/js/argon-dashboard.min.js?v=2.1.0') }}"></script>
-
 </body>
-
 </html>

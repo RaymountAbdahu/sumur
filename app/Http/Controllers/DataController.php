@@ -3,91 +3,103 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Data;
-use App\Events\NewDataReceived;
+use App\Models\Data; // Pastikan model Data sudah di-import
+use App\Events\WaterLevelUpdated; // Pastikan event sudah di-import
+use Illuminate\Support\Facades\Validator;
 
 class DataController extends Controller
 {
-    //
-    // Menampilkan tampilan dashboard dengan data terbaru
+    /**
+     * Menampilkan halaman dashboard utama dengan data terakhir.
+     */
     public function dashboard()
     {
-        // Ambil data terakhir
-        $latestData = Data::latest('id')->first();
+        // Ambil data rekaman terakhir dari database
+        $latestData = Data::latest('waktu')->first();
+        $waterLevelPercent = 0; // Nilai default
 
-        // Hitung persentase air dari sensor aktif (max 5 sensor)
-        $waterLevelPercent = 0;
         if ($latestData) {
-            $activeSensors = $latestData->sensor1 + $latestData->sensor2 + $latestData->sensor3 + $latestData->sensor4 + $latestData->sensor5;
-            $waterLevelPercent = ($activeSensors / 5) * 100;
+            // Hitung jumlah sensor yang aktif dari data terakhir
+            $activeSensors = 0;
+            if ($latestData->sensor1) $activeSensors++;
+            if ($latestData->sensor2) $activeSensors++;
+            if ($latestData->sensor3) $activeSensors++;
+            if ($latestData->sensor4) $activeSensors++;
+            if ($latestData->sensor5) $activeSensors++;
+            
+            // Setiap sensor mewakili 20% dari total ketinggian
+            $waterLevelPercent = $activeSensors * 20;
         }
 
-        // Ambil data 7 hari terakhir
-        $weeklyData = Data::where('created_at', '>=', now()->subDays(7))->get();
-
-        // Hitung persentase air dari tiap data
-        $weeklyPercentages = $weeklyData->map(function ($data) {
-            $active = $data->sensor1 + $data->sensor2 + $data->sensor3 + $data->sensor4 + $data->sensor5;
-            return ($active / 5) * 100;
-        });
-
-        // Hitung rata-rata dan nilai maksimum
-        $weeklyAverage = $weeklyPercentages->average() ?? 0;
-        $weeklyMax = $weeklyPercentages->max() ?? 0;
-
-        // Kirim data ke view
-        return view('dashboard', compact('latestData', 'waterLevelPercent', 'weeklyAverage', 'weeklyMax'));
+        // Kirim data ke view 'dashboard'
+        return view('dashboard', [
+            'latestData' => $latestData,
+            'waterLevelPercent' => $waterLevelPercent,
+            // Anda bisa menambahkan data lain di sini, misal untuk rata-rata mingguan
+            'weeklyAverage' => 0, // Contoh
+            'weeklyMax' => 0,     // Contoh
+        ]);
     }
 
-
-
-    // Menampilkan seluruh riwayat data pada tabel
+    /**
+     * Menampilkan halaman tabel data.
+     */
     public function table()
     {
-        $allData = Data::orderBy('id', 'desc')->get();
+        // Ambil semua data, urutkan dari yang terbaru
+        $allData = Data::latest('waktu')->paginate(10); // Paginate untuk data yang banyak
 
-        return view('data', compact('allData'));
+        return view('data', ['allData' => $allData]);
     }
 
-    // Menyimpan data sensor
+    /**
+     * Menerima dan menyimpan data dari ESP32.
+     * Ini adalah API endpoint.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // Validasi data yang masuk dari ESP32
+        $validator = Validator::make($request->all(), [
             'sensor1' => 'required|boolean',
             'sensor2' => 'required|boolean',
             'sensor3' => 'required|boolean',
             'sensor4' => 'required|boolean',
             'sensor5' => 'required|boolean',
+            'status' => 'required|in:Bahaya,Siaga,Waspada,Aman',
+            'catatan' => 'nullable|string',
         ]);
 
-        $activeCount = $validated['sensor1'] + $validated['sensor2'] + $validated['sensor3'] + $validated['sensor4'] + $validated['sensor5'];
-
-        // Penentuan status
-        if ($activeCount == 1) {
-            $status = 'Bahaya';
-        } elseif ($activeCount == 2 || $activeCount == 3) {
-            $status = 'Waspada';
-        } elseif ($activeCount == 4) {
-            $status = 'Siaga';
-        } elseif ($activeCount == 5) {
-            $status = 'Aman';
-        } else {
-            $status = 'Tidak Terdeteksi';
+        // Jika validasi gagal, kirim response error
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
         }
 
+        // Buat rekaman baru di database
         $data = Data::create([
-            'sensor1' => $validated['sensor1'],
-            'sensor2' => $validated['sensor2'],
-            'sensor3' => $validated['sensor3'],
-            'sensor4' => $validated['sensor4'],
-            'sensor5' => $validated['sensor5'],
-            'status'  => $status,
-            'waktu'   => now(),
-            'catatan' => null
+            'sensor1' => $request->sensor1,
+            'sensor2' => $request->sensor2,
+            'sensor3' => $request->sensor3,
+            'sensor4' => $request->sensor4,
+            'sensor5' => $request->sensor5,
+            'status' => $request->status,
+            'catatan' => $request->catatan,
+            'waktu' => now(), // Set waktu saat data diterima
         ]);
 
-        broadcast(new NewDataReceived($data))->toOthers();
+        // Hitung persentase untuk disiarkan melalui WebSocket
+        $activeSensors = $request->sensor1 + $request->sensor2 + $request->sensor3 + $request->sensor4 + $request->sensor5;
+        $waterLevelPercent = $activeSensors * 20;
 
-        return redirect()->route('dashboard')->with('success', 'Data berhasil disimpan.');
+        // Tambahkan properti baru ke objek data sebelum disiarkan
+        $data->waterLevelPercent = $waterLevelPercent;
+
+        // Siarkan event WaterLevelUpdated dengan data yang baru
+        broadcast(new WaterLevelUpdated($data))->toOthers();
+
+        // Kirim response sukses kembali ke ESP32
+        return response()->json([
+            'message' => 'Data received and stored successfully',
+            'data' => $data
+        ], 201);
     }
 }

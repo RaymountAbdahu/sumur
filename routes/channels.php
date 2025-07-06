@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('water-level-channel', function () {
+    return true; // Izinkan semua orang untuk mendengarkan channel ini
+});
+

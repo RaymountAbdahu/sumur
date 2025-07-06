@@ -26,4 +26,3 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DataController::class, 'dashboard'])->name('dashboard');
 Route::get('/data', [DataController::class, 'table'])->name('table');
-Route::post('/data/store', [DataController::class, 'store'])->name('data.store');
