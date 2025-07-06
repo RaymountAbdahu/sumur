@@ -3,62 +3,74 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Data; // Pastikan model Data sudah di-import
-use App\Events\WaterLevelUpdated; // Pastikan event sudah di-import
+use App\Models\Data;
+use App\Events\WaterLevelUpdated;
 use Illuminate\Support\Facades\Validator;
 
 class DataController extends Controller
 {
     /**
-     * Menampilkan halaman dashboard utama dengan data terakhir.
+     * Menampilkan halaman dashboard dengan data dari kedua reservoir.
      */
     public function dashboard()
     {
-        // Ambil data rekaman terakhir dari database
-        $latestData = Data::latest('waktu')->first();
-        $waterLevelPercent = 0; // Nilai default
-
-        if ($latestData) {
-            // Hitung jumlah sensor yang aktif dari data terakhir
-            $activeSensors = 0;
-            if ($latestData->sensor1) $activeSensors++;
-            if ($latestData->sensor2) $activeSensors++;
-            if ($latestData->sensor3) $activeSensors++;
-            if ($latestData->sensor4) $activeSensors++;
-            if ($latestData->sensor5) $activeSensors++;
-            
-            // Setiap sensor mewakili 20% dari total ketinggian
-            $waterLevelPercent = $activeSensors * 20;
+        // --- AMBIL DATA UNTUK SUMUR 1 ---
+        $latestData1 = Data::where('catatan', 'Sumur Reservoir 1')->latest('waktu')->first();
+        $waterLevelPercent1 = 0;
+        if ($latestData1) {
+            $activeSensors1 = $latestData1->sensor1 + $latestData1->sensor2 + $latestData1->sensor3 + $latestData1->sensor4 + $latestData1->sensor5;
+            $waterLevelPercent1 = $activeSensors1 * 20;
         }
 
-        // Kirim data ke view 'dashboard'
+        // --- AMBIL DATA UNTUK SUMUR 2 ---
+        $latestData2 = Data::where('catatan', 'Sumur Reservoir 2')->latest('waktu')->first();
+        $waterLevelPercent2 = 0;
+        if ($latestData2) {
+            $activeSensors2 = $latestData2->sensor1 + $latestData2->sensor2 + $latestData2->sensor3 + $latestData2->sensor4 + $latestData2->sensor5;
+            $waterLevelPercent2 = $activeSensors2 * 20;
+        }
+
+        // Kirim data dari kedua sumur ke view
         return view('dashboard', [
-            'latestData' => $latestData,
-            'waterLevelPercent' => $waterLevelPercent,
-            // Anda bisa menambahkan data lain di sini, misal untuk rata-rata mingguan
-            'weeklyAverage' => 0, // Contoh
-            'weeklyMax' => 0,     // Contoh
+            'latestData1' => $latestData1,
+            'waterLevelPercent1' => $waterLevelPercent1,
+            'latestData2' => $latestData2,
+            'waterLevelPercent2' => $waterLevelPercent2,
         ]);
     }
 
     /**
-     * Menampilkan halaman tabel data.
+     * Menampilkan halaman tabel data dengan fungsionalitas filter.
      */
-    public function table()
+    public function table(Request $request)
     {
-        // Ambil semua data, urutkan dari yang terbaru
-        $allData = Data::latest('waktu')->paginate(10); // Paginate untuk data yang banyak
+        // Ambil nilai filter dari URL. Jika tidak ada, defaultnya null.
+        $filter = $request->input('filter');
 
-        return view('data', ['allData' => $allData]);
+        // Mulai membangun query ke database
+        $query = Data::query();
+
+        // Jika ada filter yang diterapkan, tambahkan kondisi 'where'
+        if ($filter) {
+            $query->where('catatan', $filter);
+        }
+
+        // Eksekusi query, urutkan dari yang terbaru, dan aktifkan paginasi.
+        // withQueryString() penting agar filter tetap aktif saat berpindah halaman.
+        $allData = $query->latest('waktu')->paginate(15)->withQueryString();
+
+        // Kirim data yang sudah difilter dan nilai filter saat ini ke view
+        return view('data', [
+            'allData' => $allData,
+            'currentFilter' => $filter
+        ]);
     }
 
     /**
      * Menerima dan menyimpan data dari ESP32.
-     * Ini adalah API endpoint.
      */
     public function store(Request $request)
     {
-        // Validasi data yang masuk dari ESP32
         $validator = Validator::make($request->all(), [
             'sensor1' => 'required|boolean',
             'sensor2' => 'required|boolean',
@@ -66,39 +78,22 @@ class DataController extends Controller
             'sensor4' => 'required|boolean',
             'sensor5' => 'required|boolean',
             'status' => 'required|in:Bahaya,Siaga,Waspada,Aman',
-            'catatan' => 'nullable|string',
+            'catatan' => 'required|string|in:Sumur Reservoir 1,Sumur Reservoir 2',
         ]);
 
-        // Jika validasi gagal, kirim response error
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        // Buat rekaman baru di database
-        $data = Data::create([
-            'sensor1' => $request->sensor1,
-            'sensor2' => $request->sensor2,
-            'sensor3' => $request->sensor3,
-            'sensor4' => $request->sensor4,
-            'sensor5' => $request->sensor5,
-            'status' => $request->status,
-            'catatan' => $request->catatan,
-            'waktu' => now(), // Set waktu saat data diterima
-        ]);
+        $data = Data::create($validator->validated() + ['waktu' => now()]);
 
-        // Hitung persentase untuk disiarkan melalui WebSocket
-        $activeSensors = $request->sensor1 + $request->sensor2 + $request->sensor3 + $request->sensor4 + $request->sensor5;
-        $waterLevelPercent = $activeSensors * 20;
+        $activeSensors = $data->sensor1 + $data->sensor2 + $data->sensor3 + $data->sensor4 + $data->sensor5;
+        $data->waterLevelPercent = $activeSensors * 20;
 
-        // Tambahkan properti baru ke objek data sebelum disiarkan
-        $data->waterLevelPercent = $waterLevelPercent;
-
-        // Siarkan event WaterLevelUpdated dengan data yang baru
         broadcast(new WaterLevelUpdated($data))->toOthers();
 
-        // Kirim response sukses kembali ke ESP32
         return response()->json([
-            'message' => 'Data received and stored successfully',
+            'message' => 'Data received successfully',
             'data' => $data
         ], 201);
     }

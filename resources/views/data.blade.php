@@ -3,298 +3,289 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}">
-    <link rel="icon" type="image/png" href="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}">
-    <title>
-        Tabel Data - Sumur Ajaib
-    </title>
-    <!-- Fonts and icons -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Nucleo Icons -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Riwayat Data – ReservoirGambut.id</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('temp/file/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
-
-    <!-- Load Vite assets -->
     @vite('resources/js/app.js')
 
-    <!-- Custom Styles for UI/UX Revamp -->
     <style>
         :root {
-            --bg-color: #2c3e50;
-            --card-bg: rgba(44, 62, 80, 0.6);
-            --border-color: rgba(0, 255, 255, 0.2);
-            --text-color: #ecf0f1;
-            --text-muted-color: #bdc3c7;
-            --status-aman: #00f2fe;
-            --status-waspada: #f1c40f;
-            --status-siaga: #e67e22;
-            --status-bahaya: #e74c3c;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-glass: rgba(30, 41, 59, .75);
+            --border: #334155;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #4fd1c5;
+            --success: #4ade80;
+            --warn: #facc15;
+            --alert: #fb923c;
+            --danger: #f87171;
         }
 
         body.g-sidenav-show {
-            background-color: var(--bg-color);
-        }
-
-        .main-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('{{ asset('temp/file/assets/img/uksum.jpg') }}') no-repeat center center;
-            background-size: cover;
-            filter: brightness(0.6);
-            z-index: -1;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
         }
 
         .main-content {
-            position: relative;
+            background-image: linear-gradient(rgba(51, 65, 85, .15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(51, 65, 85, .15) 1px, transparent 1px);
+            background-size: 32px 32px;
+            padding: 1.5rem;
         }
 
-        /* Frosted Glass Card Effect */
         .card-glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
+            background: var(--surface-glass);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border);
             border-radius: 1rem;
-            color: var(--text-color);
+            color: var(--text);
+            overflow: hidden;
         }
 
-        .card-glass .card-header, .card-glass .card-body {
-            background-color: transparent;
-        }
-        
-        .card-glass h6 {
-            color: var(--text-color);
+        .card-header {
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            padding: 1rem 1.25rem;
         }
 
-        /* Themed Table */
-        .table {
-            color: var(--text-color);
+        h2,
+        h5,
+        h6 {
+            margin: 0;
+        }
+
+        .filter-btn .btn {
+            font-size: .78rem;
+            padding: .35rem 1rem;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: transparent;
+            transition: .25s;
+        }
+
+        .filter-btn .btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-btn .active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+            font-weight: 600;
         }
 
         .table thead th {
-            color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
+            color: var(--accent);
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: .7rem;
+            border-bottom: 2px solid var(--border);
         }
 
         .table tbody tr {
-            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-            transition: background-color 0.3s ease;
-        }
-        
-        .table tbody tr:last-child {
-            border-bottom: none;
+            border-bottom: 1px solid var(--border);
+            transition: background .2s ease-in-out;
         }
 
         .table tbody tr:hover {
-            background-color: rgba(0, 255, 255, 0.05);
+            background: rgba(79, 209, 197, .06);
         }
-        
+
         .table td {
-            color: var(--text-muted-color);
-            padding: 1rem 1.5rem;
-            vertical-align: middle;
-        }
-        
-        .table .font-weight-bold {
-            color: var(--text-color);
+            color: var(--muted);
+            font-size: 0.875rem;
         }
 
-        /* Custom Badges */
-        .badge-custom {
-            padding: 0.4em 0.8em;
-            font-size: 0.75rem;
+        .table .dt {
+            color: var(--text);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: .35em .7em;
+            border-radius: .375rem;
+            font-size: .75rem;
             font-weight: 700;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.375rem;
-            color: #2c3e50; /* Dark text for contrast */
+            color: var(--bg);
         }
 
-        .badge-aman { background-color: var(--status-aman); }
-        .badge-waspada { background-color: var(--status-waspada); }
-        .badge-siaga { background-color: var(--status-siaga); }
-        .badge-bahaya { background-color: var(--status-bahaya); color: white; }
+        .badge-aman {
+            background: var(--success);
+        }
 
-        /* Animation for new row */
+        .badge-waspada {
+            background: var(--warn);
+        }
+
+        .badge-siaga {
+            background: var(--alert);
+        }
+
+        .badge-bahaya {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .pagination .page-link {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            border-radius: .375rem;
+            margin: 0 2px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+        }
+
+        .pagination .page-item:not(.active) .page-link:hover {
+            background: rgba(79, 209, 197, .1);
+            border-color: rgba(79, 209, 197, .4);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #475569;
+            border-color: #273549;
+        }
+
         @keyframes fadeIn {
-            from { background-color: rgba(0, 255, 255, 0.2); opacity: 0; transform: translateY(-10px); }
-            to { background-color: transparent; opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .new-row-animation {
-            animation: fadeIn 1.5s ease-out;
+        .new-row {
+            animation: fadeIn .6s ease-out;
         }
 
+        @media(max-width: 767px) {
+            body.g-sidenav-show .sidenav {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 
 <body class="g-sidenav-show">
-    <div class="main-content position-relative max-height-vh-100 h-100">
-        <!-- Sidenav -->
-        <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 card-glass" id="sidenav-main">
-            <div class="sidenav-header">
-                <a class="navbar-brand m-0" href="{{ route('dashboard') }}">
-                    <img src="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}" class="navbar-brand-img h-100" alt="main_logo">
-                    <span class="ms-1 font-weight-bold text-white">SUMUR AJAIB</span>
-                </a>
-            </div>
-            <hr class="horizontal light mt-0 mb-2">
-            <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-tv-2 text-white text-sm"></i>
-                            </div>
-                            <span class="nav-link-text ms-1 text-white">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('table') }}" style="background: rgba(0, 255, 255, 0.1); border-radius: 0.5rem;">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-calendar-grid-58 text-white text-sm"></i>
-                            </div>
-                            <span class="nav-link-text ms-1 text-white">Tabel Data</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </aside>
+    @include('sidebar')
 
-        <!-- Main Content -->
-        <main class="main-content position-relative border-radius-lg">
-            <div class="container-fluid py-4">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-glass">
-                            <div class="card-header pb-0">
-                                <h6>Riwayat Monitoring Sumur Ajaib</h6>
-                            </div>
-                            <div class="card-body px-0 pt-0 pb-2">
-                                <div class="table-responsive p-0">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
+    <main class="main-content border-radius-lg ps-3 pe-3">
+        <header class="d-flex justify-content-between align-items-center py-3 flex-wrap gap-2">
+            <div>
+                <h2 class="text-white fw-bold mb-0">Riwayat Data</h2>
+                <p class="text-muted mb-0 small">Log ketinggian air & status sensor secara historis.</p>
+            </div>
+            <div class="filter-btn btn-group" role="group">
+                <a href="{{ route('table') }}" class="btn {{ !$currentFilter ? 'active' : '' }}">Semua</a>
+                <a href="{{ route('table', ['filter' => 'Sumur Reservoir 1']) }}"
+                    class="btn {{ $currentFilter == 'Sumur Reservoir 1' ? 'active' : '' }}">Sumur 1</a>
+                <a href="{{ route('table', ['filter' => 'Sumur Reservoir 2']) }}"
+                    class="btn {{ $currentFilter == 'Sumur Reservoir 2' ? 'active' : '' }}">Sumur 2</a>
+            </div>
+        </header>
+
+        <section class="container-fluid pb-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <article class="card card-glass shadow-lg h-100">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table align-items-center mb-0">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th class="ps-4">Waktu</th>
+                                            <th class="text-center">Level Air</th>
+                                            <th class="text-center">Status</th>
+                                            <th>Lokasi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="data-body" class="text-center">
+                                        @forelse($allData as $d)
+                                            @php $pct = ($d->sensor1+$d->sensor2+$d->sensor3+$d->sensor4+$d->sensor5)*20; @endphp
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Waktu</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Level Air</th>
-                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Catatan</th>
+                                                <td class="ps-4 dt">
+                                                    <div class="fw-semibold">{{ $d->waktu->format('d M Y') }}</div>
+                                                    <small class="text-muted">{{ $d->waktu->format('H:i:s') }}
+                                                        WIB</small>
+                                                </td>
+                                                <td class="text-center fw-semibold">{{ $pct }}%</td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="badge badge-{{ strtolower($d->status) }}">{{ $d->status }}</span>
+                                                </td>
+                                                <td>{{ $d->catatan ?? '-' }}</td>
                                             </tr>
-                                        </thead>
-                                        <tbody id="data-table-body">
-                                            @forelse ($allData as $data)
-                                                @php
-                                                    $activeSensors = $data->sensor1 + $data->sensor2 + $data->sensor3 + $data->sensor4 + $data->sensor5;
-                                                    $percent = $activeSensors * 20;
-                                                    $statusClass = strtolower($data->status);
-                                                @endphp
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex px-2 py-1">
-                                                            <div class="d-flex flex-column justify-content-center">
-                                                                <h6 class="mb-0 text-sm font-weight-bold">{{ $data->waktu->format('d M Y') }}</h6>
-                                                                <p class="text-xs text-muted mb-0">{{ $data->waktu->format('H:i:s') }} WIB</p>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-sm font-weight-bold mb-0">{{ $percent }}%</p>
-                                                    </td>
-                                                    <td class="align-middle text-center text-sm">
-                                                        <span class="badge-custom badge-{{ $statusClass }}">{{ $data->status }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-sm font-weight-normal mb-0">{{ $data->catatan ?? '-' }}</p>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center py-5">
-                                                        <p class="text-muted">Belum ada riwayat data yang tercatat.</p>
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="card-footer px-3 border-0">
-                                {{ $allData->links() }}
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center py-5 text-muted">Tidak ada data.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
+                        <div class="card-footer d-flex justify-content-end py-3">
+                            {{ $allData->links() }}
+                        </div>
+                    </article>
                 </div>
             </div>
-        </main>
-    </div>
+        </section>
+    </main>
 
-    <!-- Core JS Files -->
     <script src="{{ asset('temp/file/assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('temp/file/assets/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('temp/file/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('temp/file/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('temp/file/assets/js/argon-dashboard.min.js') }}"></script>
 
-    <!-- Real-time Table Update Script -->
     <script type="module">
-        const tableBody = document.getElementById('data-table-body');
+        const tbody = document.getElementById('data-body');
+        const currentFilter = @json($currentFilter);
 
-        // Function to create and prepend a new row
-        function addDataToTable(data) {
-            const percent = Math.round(data.waterLevelPercent || 0);
-            const statusClass = (data.status || '').toLowerCase();
-            const time = new Date(data.waktu);
+        function prependRow(d) {
+            const pct = Math.round(d.waterLevelPercent || 0);
+            const statusCls = (d.status || '').toLowerCase();
+            const time = new Date(d.waktu);
+            const row = document.createElement('tr');
+            row.classList.add('new-row');
+            row.innerHTML = `
+        <td class="ps-4 dt">
+          <div class="fw-semibold">${time.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+          <small class="text-muted">${time.toLocaleTimeString('id-ID')} WIB</small>
+        </td>
+        <td class="text-center fw-semibold">${pct}%</td>
+        <td class="text-center">
+          <span class="badge badge-${statusCls}">${d.status}</span>
+        </td>
+        <td>${d.catatan || '-'}</td>`;
 
-            const newRow = document.createElement('tr');
-            newRow.classList.add('new-row-animation');
-            
-            newRow.innerHTML = `
-                <td>
-                    <div class="d-flex px-2 py-1">
-                        <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm font-weight-bold">${time.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</h6>
-                            <p class="text-xs text-muted mb-0">${time.toLocaleTimeString('id-ID')} WIB</p>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <p class="text-sm font-weight-bold mb-0">${percent}%</p>
-                </td>
-                <td class="align-middle text-center text-sm">
-                    <span class="badge-custom badge-${statusClass}">${data.status}</span>
-                </td>
-                <td>
-                    <p class="text-sm font-weight-normal mb-0">${data.catatan || '-'}</p>
-                </td>
-            `;
-
-            tableBody.prepend(newRow);
-
-            // Optional: remove the placeholder if it exists
-            const placeholder = tableBody.querySelector('td[colspan="4"]');
-            if (placeholder) {
-                placeholder.parentElement.remove();
-            }
+            const placeholder = tbody.querySelector('td[colspan]');
+            if (placeholder) placeholder.parentElement.remove();
+            tbody.prepend(row);
         }
 
-        // --- WebSocket Listener ---
-        window.Echo.channel('water-level-channel')
-            .listen('.new-data', (event) => {
-                console.log("Data baru diterima untuk tabel:", event.data);
-                addDataToTable(event.data);
-            });
+        window.Echo.channel('water-level-channel').listen('.new-data', e => {
+            const d = e.data;
+            if (!currentFilter || d.catatan === currentFilter) prependRow(d);
+        });
     </script>
 </body>
+
 </html>

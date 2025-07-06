@@ -3,403 +3,329 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}">
-    <link rel="icon" type="image/png" href="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}">
-    <title>
-        Dashboard Sumur Ajaib
-    </title>
-    <!-- Fonts and icons -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Nucleo Icons -->
-    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <!-- CSS Files -->
-    <link id="pagestyle" href="{{ asset('temp/file/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Dashboard – ReservoirGambut.id</title>
 
-    <!-- Load Vite assets -->
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link id="pagestyle" href="{{ asset('temp/file/assets/css/argon-dashboard.css') }}" rel="stylesheet" />
     @vite('resources/js/app.js')
 
-    <!-- Custom Styles for UI/UX Revamp -->
+    <!-- THEME -->
     <style>
         :root {
-            --bg-color: #2c3e50;
-            --main-card-bg: rgba(23, 32, 42, 0.7);
-            --card-bg: rgba(44, 62, 80, 0.6);
-            --border-color: rgba(0, 255, 255, 0.2);
-            --text-color: #ecf0f1;
-            --text-muted-color: #bdc3c7;
-            --glow-color: #00cyan;
-            --water-color-top: #00f2fe;
-            --water-color-bottom: #4facfe;
-            --status-aman: #00f2fe;
-            --status-waspada: #f1c40f;
-            --status-siaga: #e67e22;
-            --status-bahaya: #e74c3c;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --glass: rgba(30, 41, 59, .72);
+            --border: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #22d3ee;
+            --water-a: #0ea5e9;
+            --water-b: #38bdf8;
+            --success: #4ade80;
+            --warn: #facc15;
+            --alert: #fb923c;
+            --danger: #f87171;
         }
 
         body.g-sidenav-show {
-            background-color: var(--bg-color);
-        }
-
-        /* Override the default dark background to show the image */
-        .main-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('{{ asset('temp/file/assets/img/uksum.jpg') }}') no-repeat center center;
-            background-size: cover;
-            filter: brightness(0.6);
-            z-index: -1;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
         }
 
         .main-content {
-            position: relative;
-        }
-        
-        .min-height-300 {
-            background: none !important;
+            background-image: linear-gradient(rgba(51, 65, 85, .15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(51, 65, 85, .15) 1px, transparent 1px);
+            background-size: 32px 32px;
+            padding: 1.5rem;
         }
 
-        /* Frosted Glass Card Effect */
+        h2 {
+            font-size: 2rem;
+        }
+
         .card-glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            color: var(--text-color);
-            transition: all 0.3s ease;
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            color: var(--text);
+            overflow: hidden;
+            transition: transform .2s ease, box-shadow .2s ease;
         }
 
         .card-glass:hover {
-            border-color: rgba(0, 255, 255, 0.5);
-            transform: translateY(-5px);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, .2);
         }
 
-        .card-glass .card-header, .card-glass .card-body, .card-glass .card-footer {
-            background-color: transparent;
+        .card-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .card-glass h1, .card-glass h2, .card-glass h3, .card-glass h4, .card-glass h5, .card-glass h6 {
-            color: var(--text-color);
+        .card-header h6 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: white;
         }
 
-        .card-glass p, .card-glass .text-sm, .card-glass .text-xs {
-            color: var(--text-muted-color);
+        .card-header time {
+            font-size: 0.8rem;
+            color: var(--muted);
         }
 
-        /* Main Status Card Styling */
-        #main-status-card {
-            background: var(--main-card-bg);
-            text-align: center;
-            padding: 2rem 1rem;
-            border-width: 2px;
+        .reservoir {
+            display: flex;
+            align-items: flex-end;
+            gap: .75rem;
+            height: 280px;
         }
 
-        #status-text {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-shadow: 0 0 15px currentColor;
+        .scale {
+            position: relative;
+            width: 3rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
         }
 
-        /* Magic Well Visualization */
-        .magic-well-container {
+        .scale span {
+            position: relative;
+            display: inline-block;
+            padding-left: 0.25rem;
+        }
+
+        .scale span::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -8px;
+            width: 8px;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .well {
+            position: relative;
+            width: 110px;
+            height: 100%;
+            border: 2px solid var(--border);
+            border-top: none;
+            background: repeating-linear-gradient(0deg, rgba(100, 116, 139, .15) 0 1px, transparent 1px 30px);
+            border-radius: 0 0 1rem 1rem;
+            overflow: hidden;
+        }
+
+        .water {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, var(--water-a), var(--water-b));
+            height: 0;
+            transition: height .8s cubic-bezier(.4, .8, .4, 1);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
-            height: 100%;
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.95rem;
         }
 
-        .magic-well {
-            width: 180px;
-            height: 420px;
-            border: 4px solid;
-            border-image-slice: 1;
-            border-image-source: linear-gradient(to bottom, var(--status-aman), #9b59b6);
-            border-radius: 20px 20px 100px 100px;
-            position: relative;
-            background: rgba(10, 10, 20, 0.5);
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0,0,0,0.5);
-        }
-
-        #water-level {
+        .water::before {
+            content: '';
             position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: linear-gradient(to top, var(--water-color-bottom), var(--water-color-top));
-            transition: height 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 6px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, .6), transparent);
         }
 
-        /* Wave Animation */
-        .wave {
-            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x;
-            position: absolute;
-            top: -198px;
-            width: 6400px;
-            height: 198px;
-            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-            transform: translate3d(0, 0, 0);
-        }
-        .wave:nth-of-type(2) {
-            top: -175px;
-            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite, swell 7s ease -1.25s infinite;
-            opacity: 1;
-        }
-        @keyframes wave {
-            0% { margin-left: 0; }
-            100% { margin-left: -1600px; }
-        }
-        @keyframes swell {
-            0%, 100% { transform: translate3d(0, -25px, 0); }
-            50% { transform: translate3d(0, 5px, 0); }
-        }
-
-        /* Bubbles Animation */
-        .bubble {
-            position: absolute;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.2);
+        .led {
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            animation: bubble-rise 10s infinite ease-in;
-        }
-        @keyframes bubble-rise {
-            0% { bottom: -10px; transform: translateX(0); }
-            100% { bottom: 105%; transform: translateX(15px); }
+            background: #475569;
+            box-shadow: 0 0 0 transparent;
+            transition: .25s;
         }
 
-        /* Sensor Detail Item */
-        .sensor-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            border-radius: 0.75rem;
-            background: rgba(0,0,0,0.2);
-            transition: background 0.3s ease;
-        }
-        .sensor-item:hover {
-            background: rgba(0,0,0,0.4);
-        }
-        .sensor-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            color: var(--text-muted-color);
-            transition: all 0.3s ease;
-        }
-        .sensor-icon.active {
-            color: var(--status-aman);
-            text-shadow: 0 0 10px var(--status-aman);
+        .led.active {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
         }
 
-        /* Dynamic Status Colors */
-        .status-aman { border-color: var(--status-aman); color: var(--status-aman); }
-        .status-waspada { border-color: var(--status-waspada); color: var(--status-waspada); }
-        .status-siaga { border-color: var(--status-siaga); color: var(--status-siaga); }
-        .status-bahaya { border-color: var(--status-bahaya); color: var(--status-bahaya); }
-        .status-unknown { border-color: var(--text-muted-color); color: var(--text-muted-color); }
+        .st-success {
+            color: var(--success);
+        }
 
+        .st-warn {
+            color: var(--warn);
+        }
+
+        .st-alert {
+            color: var(--alert);
+        }
+
+        .st-danger {
+            color: var(--danger);
+        }
+
+        .st-unknown {
+            color: var(--muted);
+        }
+
+        @media(max-width:991px) {
+            .reservoir {
+                height: 220px;
+            }
+        }
+
+        @media(max-width:767px) {
+            body.g-sidenav-show .sidenav {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 
 <body class="g-sidenav-show">
-    <div class="main-content position-relative max-height-vh-100 h-100">
-        <!-- Sidenav -->
-        <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 card-glass" id="sidenav-main">
-            <div class="sidenav-header">
-                <a class="navbar-brand m-0" href="{{ route('dashboard') }}">
-                    <img src="{{ asset('temp/file/assets/img/ukur sumur.jpg') }}" class="navbar-brand-img h-100" alt="main_logo">
-                    <span class="ms-1 font-weight-bold text-white">SUMUR AJAIB</span>
-                </a>
-            </div>
-            <hr class="horizontal light mt-0 mb-2">
-            <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('dashboard') }}" style="background: rgba(0, 255, 255, 0.1); border-radius: 0.5rem;">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-tv-2 text-white text-sm"></i>
-                            </div>
-                            <span class="nav-link-text ms-1 text-white">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('table') }}">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-calendar-grid-58 text-white text-sm"></i>
-                            </div>
-                            <span class="nav-link-text ms-1 text-white">Tabel Data</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content position-relative border-radius-lg">
-             <div class="container-fluid py-4">
-                <div class="row">
-                    <!-- Left Column: Visualization -->
-                    <div class="col-lg-7 mb-lg-0 mb-4">
-                        <div class="card card-glass magic-well-container">
-                            <div class="magic-well">
-                                <div id="water-level">
-                                    <div class="wave"></div>
-                                    <div class="wave"></div>
-                                    <!-- Bubbles will be added by JS -->
+    @include('sidebar')
+    <main class="main-content border-radius-lg ps-3 pe-3">
+        <header class="d-flex justify-content-between align-items-center py-3">
+            <h2 class="fw-bold text-white m-0">Dashboard</h2>
+        </header>
+        <section class="container-fluid pb-4">
+            <div class="row g-4">
+                @foreach ([1, 2] as $id)
+                    <div class="col-12 col-lg-6">
+                        <article class="card card-glass h-100">
+                            <div class="card-header">
+                                <h6>Sumur Reservoir {{ $id }}</h6>
+                                <div class="mb-3">
+                                    <p class="text-muted text-xs fw-semibold text-uppercase mb-1">Waktu</p>
+                                    <time id="waktu-{{ $id }}" class="text-sm text-white">--</time>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Information -->
-                    <div class="col-lg-5">
-                        <!-- Main Status -->
-                        <div id="main-status-card" class="card card-glass status-unknown mb-4">
-                            <p class="text-uppercase font-weight-bold text-sm opacity-7 mb-0">Status Sistem</p>
-                            <h2 id="status-text" class="font-weight-bolder mb-0">Menunggu Data...</h2>
-                        </div>
-
-                        <!-- Info Cards -->
-                        <div class="row">
-                            <div class="col-sm-6">
-                                 <div class="card card-glass mb-4">
-                                     <div class="card-body p-3">
-                                         <p class="text-sm mb-0 text-uppercase font-weight-bold">Level Air</p>
-                                         <h5 id="water-level-percent-text" class="font-weight-bolder mb-0">0%</h5>
-                                     </div>
-                                 </div>
-                            </div>
-                             <div class="col-sm-6">
-                                 <div class="card card-glass mb-4">
-                                     <div class="card-body p-3">
-                                         <p class="text-sm mb-0 text-uppercase font-weight-bold">Update</p>
-                                         <h5 id="waktu-text" class="font-weight-bolder mb-0">--:--:--</h5>
-                                     </div>
-                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Sensor Details -->
-                        <div class="card card-glass">
-                            <div class="card-header pb-0">
-                                <h6>Detail Sensor</h6>
-                            </div>
-                            <div class="card-body p-3">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <div class="sensor-item">
-                                        <i id="sensor-icon-{{$i}}" class="sensor-icon fas fa-tint-slash"></i>
-                                        <div class="d-flex flex-column">
-                                            <h6 class="mb-0 text-sm">Sensor {{ $i }} <span class="text-muted">({{ ($i-1) * 25 }} cm)</span></h6>
-                                            <span id="sensor-status-{{$i}}" class="text-xs">Tidak Aktif</span>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="reservoir">
+                                            <div class="scale">
+                                                @foreach ([100, 80, 60, 40, 20, 0] as $m)
+                                                    <span>{{ $m }}%</span>
+                                                @endforeach
+                                            </div>
+                                            <div class="well">
+                                                <div id="water-{{ $id }}" class="water">--%</div>
+                                            </div>
                                         </div>
                                     </div>
-                                @endfor
+                                    <div class="col-md-6 d-flex flex-column">
+                                        <div class="mb-3">
+                                            <p class="text-muted text-xs fw-semibold text-uppercase mb-1">Status</p>
+                                            <h4 id="status-{{ $id }}" class="fw-bold st-unknown mb-0">--</h4>
+                                        </div>
+                                        <div class="mb-3">
+                                            <p class="text-muted text-xs fw-semibold text-uppercase mb-1">Level Air</p>
+                                            <h4 id="pct-{{ $id }}" class="fw-bold mb-0">--</h4>
+                                        </div>
+                                        <div class="mt-auto pt-3 border-top">
+                                            @for ($s = 1; $s <= 5; $s++)
+                                                <div class="d-flex justify-content-between align-items-center py-1">
+                                                    <span class="text-xs">Sensor {{ $s }}</span>
+                                                    <span id="led-{{ $id }}-{{ $s }}"
+                                                        class="led"></span>
+                                                </div>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        </article>
                     </div>
-                </div>
+                @endforeach
             </div>
-        </main>
-    </div>
+        </section>
+    </main>
 
-    <!-- Core JS Files -->
     <script src="{{ asset('temp/file/assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('temp/file/assets/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('temp/file/assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('temp/file/assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('temp/file/assets/js/argon-dashboard.min.js') }}"></script>
-
-    <!-- Real-time Script with Laravel Echo -->
     <script type="module">
-        // --- Element Selectors ---
-        const mainStatusCard = document.getElementById('main-status-card');
-        const statusTextEl = document.getElementById('status-text');
-        const waktuTextEl = document.getElementById('waktu-text');
-        const waterLevelPercentTextEl = document.getElementById('water-level-percent-text');
-        const waterLevelEl = document.getElementById('water-level');
+        const mapStatus = st => ({
+            Bahaya: 'st-danger',
+            Siaga: 'st-alert',
+            Waspada: 'st-warn',
+            Aman: 'st-success'
+        })[st] || 'st-unknown';
 
-        // --- Status Configuration ---
-        const statusConfig = {
-            'Bahaya': { className: 'status-bahaya' },
-            'Siaga': { className: 'status-siaga' },
-            'Waspada': { className: 'status-waspada' },
-            'Aman': { className: 'status-aman' },
-            'default': { className: 'status-unknown' }
-        };
+        function paint(id, d = {}) {
+            const pct = Math.round(d.waterLevelPercent || 0);
+            const elWater = document.getElementById(`water-${id}`);
+            elWater.style.height = `${pct}%`;
+            elWater.textContent = `${pct}%`;
 
-        // --- Bubble Generator ---
-        function createBubbles() {
-            const waterContainer = document.querySelector('.magic-well');
-            const bubbleCount = 20;
-            for (let i = 0; i < bubbleCount; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.random() * 10 + 5 + 'px';
-                bubble.style.width = size;
-                bubble.style.height = size;
-                bubble.style.left = Math.random() * 90 + '%';
-                bubble.style.animationDuration = Math.random() * 5 + 5 + 's';
-                bubble.style.animationDelay = Math.random() * 5 + 's';
-                waterContainer.appendChild(bubble);
+            const stEl = document.getElementById(`status-${id}`);
+            stEl.textContent = d.status || '--';
+            stEl.className = `fw-bold ${mapStatus(d.status)}`;
+
+            document.getElementById(`pct-${id}`).textContent = `${pct}%`;
+
+            // 💡 Format waktu dari database ke format lokal (Contoh: 06 Jul 2025, 17:39 WIB)
+            const waktuEl = document.getElementById(`waktu-${id}`);
+            if (d.waktu) {
+                const date = new Date(d.waktu);
+                waktuEl.textContent = date.toLocaleString('id-ID', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) + ' WIB';
+            } else {
+                waktuEl.textContent = '--';
             }
-        }
-        createBubbles();
 
-        // --- Main UI Update Function ---
-        function updateDashboard(data) {
-            console.log("Menerima data baru:", data);
-            
-            const status = data.status || 'default';
-            const percent = Math.round(data.waterLevelPercent || 0);
-            const statusClass = statusConfig[status]?.className || statusConfig.default.className;
-
-            // 1. Update Main Status Card
-            mainStatusCard.className = `card card-glass mb-4 ${statusClass}`;
-            statusTextEl.textContent = data.status || 'Tidak Diketahui';
-            statusTextEl.className = `font-weight-bolder mb-0 ${statusClass}`;
-
-            // 2. Update Last Update Time
-            waktuTextEl.textContent = new Date(data.waktu).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-            // 3. Update Water Level Percentage Text
-            waterLevelPercentTextEl.textContent = `${percent}%`;
-
-            // 4. Update Water Well Visualization
-            waterLevelEl.style.height = `${percent}%`;
-            
-            // 5. Update Individual Sensor Status
-            for (let i = 1; i <= 5; i++) {
-                const icon = document.getElementById(`sensor-icon-${i}`);
-                const statusText = document.getElementById(`sensor-status-${i}`);
-                if (data[`sensor${i}`]) {
-                    icon.className = 'sensor-icon fas fa-tint active';
-                    statusText.textContent = 'Aktif';
-                } else {
-                    icon.className = 'sensor-icon fas fa-tint-slash';
-                    statusText.textContent = 'Tidak Aktif';
-                }
+            for (let s = 1; s <= 5; s++) {
+                document.getElementById(`led-${id}-${s}`).classList.toggle('active', !!d[`sensor${s}`]);
             }
         }
 
-        // --- Initial Data Load ---
-        const initialData = @json($latestData);
-        if (initialData) {
-            initialData.waterLevelPercent = @json($waterLevelPercent);
-            updateDashboard(initialData);
-        }
+        paint(1, {
+            ...@json($latestData1),
+            waterLevelPercent: @json($waterLevelPercent1)
+        });
+        paint(2, {
+            ...@json($latestData2),
+            waterLevelPercent: @json($waterLevelPercent2)
+        });
 
-        // --- WebSocket Listener ---
-        window.Echo.channel('water-level-channel')
-            .listen('.new-data', (event) => {
-                updateDashboard(event.data);
-            });
+        window.Echo?.channel('water-level-channel').listen('.new-data', e => {
+            if (e.data.catatan === 'Sumur Reservoir 1') paint(1, e.data);
+            if (e.data.catatan === 'Sumur Reservoir 2') paint(2, e.data);
+        });
     </script>
 </body>
+
 </html>
