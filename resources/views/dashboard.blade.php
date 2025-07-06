@@ -213,8 +213,10 @@
 <body class="g-sidenav-show">
     @include('sidebar')
     <main class="main-content border-radius-lg ps-3 pe-3">
-        <header class="d-flex justify-content-between align-items-center py-3">
-            <h2 class="fw-bold text-white m-0">Dashboard</h2>
+        <header class="d-flex justify-content-between align-items-center py-3 flex-wrap gap-2">
+            <div>
+                <h2 class="text-white fw-bold mb-0">Dashboard</h2>
+            </div>
         </header>
         <section class="container-fluid pb-4">
             <div class="row g-4">
